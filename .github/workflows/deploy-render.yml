@@ -1,0 +1,37 @@
+name: Deploy to Render
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: false
+        default: '3.13'
+        type: string
+      render-webhook-url:
+        required: true
+        type: string
+    secrets:
+      FLASK_APP:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Trigger deploy in Render
+        run: |
+          curl -X POST ${{ inputs.render-webhook-url }}

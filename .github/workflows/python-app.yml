@@ -11,6 +11,10 @@ on:
         required: false
         default: 'app'
         type: string
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+    
 
 jobs:
   test:

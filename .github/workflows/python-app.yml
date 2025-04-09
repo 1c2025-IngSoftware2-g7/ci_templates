@@ -46,6 +46,12 @@ jobs:
               pytest; \
             fi
           fi
-
+  
+      - name: Move coverage.xml to root
+        run: |
+          if [ -f coverage/coverage.xml ]; then
+            mv coverage/coverage.xml coverage.xml
+          fi
+  
       - name: Upload to Codecov
         uses: codecov/codecov-action@v4

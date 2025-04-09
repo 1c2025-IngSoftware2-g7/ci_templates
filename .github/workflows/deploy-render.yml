@@ -7,11 +7,10 @@ on:
         required: false
         default: '3.13'
         type: string
-      render-webhook-url:
-        required: true
-        type: string
     secrets:
       FLASK_APP:
+        required: true
+      RENDER_WEBHOOK_URL:
         required: true
 
 jobs:
@@ -34,4 +33,4 @@ jobs:
 
       - name: Trigger deploy in Render
         run: |
-          curl -X POST ${{ inputs.render-webhook-url }}
+          curl -X POST ${{ secrets.RENDER_WEBHOOK_URL }}

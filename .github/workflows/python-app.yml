@@ -39,18 +39,14 @@ jobs:
         run: |
           if [ -f docker-compose.yml ]; then
             docker compose -f docker-compose.yml up --abort-on-container-exit --exit-code-from test
+            CONTAINER_ID=$(docker ps -a -q --filter "name=test" | head -n 1)
+            docker cp "$CONTAINER_ID":/coverage/coverage.xml coverage.xml
           else
             if [ -d "${{ inputs.coverage-folder }}" ]; then \
-              pytest --cov=${{ inputs.coverage-folder }} --cov-report=xml; \
+              pytest --cov=${{ inputs.coverage-folder }} --cov-report=xml:coverage.xml; \
             else \
               pytest; \
             fi
-          fi
-  
-      - name: Move coverage.xml to root
-        run: |
-          if [ -f coverage/coverage.xml ]; then
-            mv coverage/coverage.xml coverage.xml
           fi
   
       - name: Upload to Codecov

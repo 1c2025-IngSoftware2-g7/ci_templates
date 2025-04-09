@@ -35,12 +35,16 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=13 --max-line-length=127 --statistics
 
-      - name: Run tests and coverage
+      - name: Run tests (Docker or local)
         run: |
-          if [ -d "${{ inputs.coverage-folder }}" ]; then \
-            pytest --cov=${{ inputs.coverage-folder }} --cov-report=xml; \
-          else \
-            pytest; \
+          if [ -f docker-compose.yml ]; then
+            docker compose -f docker-compose.yml up --abort-on-container-exit --exit-code-from test
+          else
+            if [ -d "${{ inputs.coverage-folder }}" ]; then \
+              pytest --cov=${{ inputs.coverage-folder }} --cov-report=xml; \
+            else \
+              pytest; \
+            fi
           fi
 
       - name: Upload to Codecov

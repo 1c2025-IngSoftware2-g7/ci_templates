@@ -41,17 +41,9 @@ jobs:
 
       - name: Run tests (Docker or local)
         run: |
-          if [ -f docker-compose.yml ]; then
-            docker compose -f docker-compose.yml up --abort-on-container-exit --exit-code-from test
-            CONTAINER_ID=$(docker ps -a -q --filter "name=test" | head -n 1)
-            docker cp "$CONTAINER_ID":/coverage/coverage.xml coverage.xml
-          else
-            if [ -d "${{ inputs.coverage-folder }}" ]; then \
-              pytest --cov=${{ inputs.coverage-folder }} --cov-report=xml:coverage.xml; \
-            else \
-              pytest; \
-            fi
-          fi
+          docker compose -f docker-compose.yml up --build --abort-on-container-exit --exit-code-from test
+          CONTAINER_ID=$(docker ps -a -q --filter "name=test" | head -n 1)
+          docker cp "$CONTAINER_ID":/coverage/coverage.xml coverage.xml
   
       - name: Upload to Codecov
         uses: codecov/codecov-action@v4

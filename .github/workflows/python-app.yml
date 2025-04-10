@@ -41,9 +41,9 @@ jobs:
 
       - name: Run tests (Docker or local)
         run: |
-          docker compose -f docker-compose.yml up --build --abort-on-container-exit --exit-code-from test
+          docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from test
           CONTAINER_ID=$(docker ps -a -q --filter "name=test" | head -n 1)
           docker cp "$CONTAINER_ID":/coverage/coverage.xml coverage.xml
-  
+          
       - name: Upload to Codecov
         uses: codecov/codecov-action@v4

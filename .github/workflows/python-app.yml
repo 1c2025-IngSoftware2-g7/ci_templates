@@ -40,8 +40,16 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=13 --max-line-length=127 --statistics
 
       - name: Write GCP credentials to file
-        if: ${{ secrets.GCP_CREDENTIALS_JSON != '' }}
-        run: echo "${{ secrets.GCP_CREDENTIALS_JSON }}" > gcs-key.json
+        run: |
+          if [ -n "${GCP_CREDENTIALS_JSON}" ]; then
+            echo "$GCP_CREDENTIALS_JSON" > gcs-key.json
+          else
+            echo "GCP_CREDENTIALS_JSON is empty or not set"
+            exit 1
+          fi
+        env:
+          GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
+      
 
       - name: Run tests (Docker or local)
         run: |

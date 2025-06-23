@@ -16,6 +16,15 @@ on:
       k8s-path:
         required: true
         type: string
+    secrets:
+      GCP_CREDENTIALS:
+        required: true
+      GCP_PROJECT_ID:
+        required: true
+      GKE_CLUSTER:
+        required: true
+      GKE_ZONE:
+        required: true
 
 jobs:
   deploy:
